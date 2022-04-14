@@ -1,22 +1,36 @@
-document.addEventListener("DOMContentLoaded", function() {
+const calculatorScreen = document.querySelector("#screen")
+const buttons = document.querySelectorAll("span")
+const clear = document.querySelector("#clear")
+let acceptingInput = true
 
-    const calculatorScreen = document.querySelector("#screen");
-    const spans = document.querySelectorAll(".buttons span");
-    const spanArray = Array.from(spans);
-    document.querySelectorAll(".operator")[1].innerText = "/";
-    document.querySelectorAll(".operator")[2].innerText = "*";
-
-    spanArray.map(button => button.addEventListener("click",
-        function() {
-
-            if (button.innerText !== "=") {
-                calculatorScreen.innerText += button.innerText
-            };
-            if (button.innerText === "=") {
-                calculatorScreen.innerText = eval(calculatorScreen.innerText)
-            };
-            if (button.innerText === "C") {
-                calculatorScreen.innerText = ""
-            };
-        }));
-});
+buttons.forEach(button => {
+    button.addEventListener("click", () => {
+        if (button.textContent == "÷" && acceptingInput) {
+            calculatorScreen.textContent += "/"
+        }
+        if (button.textContent == "x" && acceptingInput) {
+            calculatorScreen.textContent += "*"
+        }
+        if (button.textContent === "C" && acceptingInput) {
+            calculatorScreen.textContent = ""
+        }
+        if (button.textContent !== "÷" && button.textContent !== "=" && button.textContent !== "x" && button.textContent !== "C" && acceptingInput) {
+            calculatorScreen.textContent += button.textContent
+        }
+        try {
+            if (button.textContent === "=" && acceptingInput) {
+                if (calculatorScreen.textContent.includes("/0")) {
+                    calculatorScreen.textContent = "Error, Resetting"
+                }
+                calculatorScreen.textContent = eval(calculatorScreen.textContent)
+            }
+        } catch (error) {
+            calculatorScreen.textContent = "Error, Resetting"
+            acceptingInput = false
+            setTimeout(function() {
+                acceptingInput = true
+                calculatorScreen.textContent = ""
+            }, 1400)
+        }
+    })
+})
